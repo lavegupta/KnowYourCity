@@ -4,7 +4,7 @@ class Header extends Component {
   render() {
     return (
       <header>
-          <h1>Know you City</h1>
+          <h1>City Info</h1>
       </header>
     )
   }
