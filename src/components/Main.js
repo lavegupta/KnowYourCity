@@ -6,89 +6,34 @@ import Info from './Info';
 
 class Main extends Component {
 
-
   constructor(){
     super();
-    this.currentCountry = undefined;
-    this.currentRegion = undefined;
-    this.currentCity = undefined;
-    // this.countryList = [];
-    // this.regionList = [];
-    // this.cityList = [];
-    // this.info = {};
     this.state = {
-      countries : [],
-      regions : [],
-      cities : [],
-      cityInfo : {}
+      country : "",
+      region : "",
+      city : undefined,
     };
   }
 
-  componentWillMount(){
-    fetch('http://services.groupkt.com/country/get/all')
-    .then(resp => resp.json())
-    .then(data => {
-          // this.countryList = data.RestResponse.result;
-          this.setState({ 
-              countries : data.RestResponse.result,
-              regions : [],
-              cities : [],
-              cityInfo : {}
-          });
-      }
-    )
-  }
-  
   getRegions(v){
-    this.currentCountry = v;
-    fetch(`http://geodb-free-service.wirefreethought.com/v1/geo/countries/${v}/regions/?limit=10`)
-    .then(resp => resp.json())
-    .then(data => {
-        // this.regionList = data.data;
-        this.setState({ 
-          regions : data.data,
-          cities : [],
-          cityInfo : {}
-        });
-      }
-    )
+    this.setState({ country : v, region: "", city: "" });
   }
 
   getCities(v){
-    this.currentRegion = v;
-    fetch(`http://geodb-free-service.wirefreethought.com/v1/geo/countries/${this.currentCountry}/regions/${v}/cities?limit=10`)
-    .then(resp => resp.json())
-    .then(data => {
-        // this.cityList = data.data;
-        this.setState({ 
-            cities : data.data,
-            cityInfo : {}
-        });
-      }
-    )
+    this.setState({ region : v, city: "" });
   }
 
   getInfo(v){
-    this.currentCity = v;
-    fetch(`http://geodb-free-service.wirefreethought.com/v1/geo/cities/${this.currentCity}`)
-    .then(resp => resp.json())
-    .then(data => {
-        // this.info = data.data;
-        this.setState({ 
-            cityInfo : data.data
-        });
-      }
-    )
+    this.setState({ city : v });
   }
-
 
   render() {
     return (
       <main className="Main">
-        <Country title={"Country"} list={this.state.countries} getRegions={this.getRegions.bind(this)} />
-        <Regions title={"Regions"} list={this.state.regions} getCities={this.getCities.bind(this)} />
-        <Cities title={"Cities"} list={this.state.cities} getInfo={this.getInfo.bind(this)} />
-        <Info title={"Details"} data={this.state.cityInfo} />
+        <Country title={"Country"} getRegions={this.getRegions.bind(this)} />
+        <Regions title={"Regions"} data={this.state} getCities={this.getCities.bind(this)} />
+        <Cities title={"Cities"} data={this.state} getInfo={this.getInfo.bind(this)} />
+        <Info title={"Details"} data={this.state} />
       </main>
     )
   }
